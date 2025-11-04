@@ -119,16 +119,33 @@ COPY python_env/jupyterlab-settings /root/.jupyter/lab/user-settings
 RUN apt update && \
     apt install -yq --no-install-recommends \
     automake \
+    libtool \
     autoconf; \
     apt clean; \
     rm -rf /var/lib/apt/lists/*;
 
 WORKDIR /root
-RUN git clone --depth=1 https://github.com/QEF/q-e.git -b qe-7.4.1 espresso-src &&\
-    mkdir espresso;
-WORKDIR /root/espresso-src
+RUN git clone --depth 1 https://gitlab.com/libxc/libxc.git -b 7.0.0 libxc-7.0.0 ;\
+    mkdir libxc ;\
+    cd libxc-7.0.0 ;\
+    autoreconf -i . ;\
+    ./configure \
+    CC=icc \
+    CFLAGS="-O3 -parallel -par-num-threads=6" \
+    FC=ifort \
+    FCFLAGS="-O3 -parallel  -par-num-threads=6" \
+    --prefix=/root/libxc &&\
+    make -j4 &&\
+    make install &&\
+    cd ../ &&\
+    rm -rd libxc-7.0.0;
+ENV  LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/root/libxc/lib
 
-RUN ./configure \
+WORKDIR /root
+RUN git clone --depth=1 https://github.com/QEF/q-e.git -b qe-7.4.1 espresso-src &&\
+    mkdir espresso &&\
+    cd espresso-src &&\
+    ./configure \
     F90=ifort \
     F77=ifort \
     FC=ifort \
@@ -136,11 +153,11 @@ RUN ./configure \
     CXX=icpc \
     FFLAGS="-O3 -assume byterecl -ip -g -qopenmp -qmkl=parallel -xhost  -par-num-threads=12 -prof-gen -ipo" \
     FCLAGS="-O3 -assume byterecl -ip -g -qopenmp -qmkl=parallel -xhost  -par-num-threads=12 -prof-gen -ipo" \
-    --enable-openmp --enable-parallel=no --with-scalapack=intel --prefix='/root/espresso' && \
-    #--enable-openmp --enable-parallel=no --with-scalapack=intel && \
+    --enable-openmp --enable-parallel=no --with-scalapack=intel --with-libxc --with-libxc-prefix='/root/libxc' --prefix='/root/espresso' && \
     make all gui gipaw &&\
-    make install;
-    #make all gui gipaw;
+    make install &&\
+    cd ../ &&\
+    rm -rd espresso-src;
 ENV PATH=$PATH:/root/espresso/bin
 
 # GitHub設定スクリプトをコピー
