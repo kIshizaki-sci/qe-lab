@@ -1,0 +1,56 @@
+# Git関連
+.git
+.gitignore
+.gitattributes
+
+# Docker関連
+.dockerignore
+Dockerfile*
+docker-compose*
+
+# ビルド成果物
+*.o
+*.so
+*.a
+*.exe
+*.dll
+build/
+dist/
+target/
+
+# ログファイル
+*.log
+logs/
+
+# 一時ファイル
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Python関連（必要に応じてコメントアウト）
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+*.egg-info/
+.venv/
+venv/
+
+# IDE設定
+.vscode/
+.idea/
+*.sublime-*
+
+# ドキュメント（イメージに含めない場合）
+*.md
+docs/
+README*
+
+# その他
+node_modules/
+.env
+.env.*

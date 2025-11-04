@@ -1,0 +1,17 @@
+numpy
+matplotlib
+pandas
+jupyter
+jupyterlab
+h5py
+pymatgen
+opencv-python
+sympy
+graphviz
+plotly
+kaleido
+jupyterlab-git
+ipympl
+metakernel
+bash_kernel
+ase

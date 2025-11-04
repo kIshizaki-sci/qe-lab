@@ -1,0 +1,7 @@
+*.in
+*.err
+*.pwi
+*.pwo
+*.xyz
+*.save/
+*.xml

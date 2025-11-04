@@ -1,0 +1,28 @@
+services:
+  jupyterlab-gpu:
+    restart: unless-stopped
+    image: kishizakisci/qe-lab:${TAG}
+    user: root
+    volumes:
+      - ./notebooks:/root/notebooks
+      - ./pseudo_dir:/root/pseudo_dir:ro
+    ports:
+      - ${JUPYTER_PORT}:${JUPYTER_PORT}
+    environment:
+      TZ: Asia/Tokyo
+      # GitHub設定用環境変数
+      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GIT_EMAIL: ${GIT_EMAIL}
+      GIT_NAME: ${GIT_NAME}
+    deploy:
+      resources:
+        limits:
+          memory: 16g
+    command:
+      jupyter lab
+          --ip=0.0.0.0
+          --port=${JUPYTER_PORT}
+          --allow-root
+          --no-browser
+          --NotebookApp.notebook_dir='/root'
+          --NotebookApp.token='${JUPYTER_TOKEN}'
